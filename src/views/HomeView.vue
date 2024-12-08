@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import Footer from '../components/Footer.vue'
 import Masonry from 'masonry-layout';
 
 const imageModules = import.meta.glob('@/assets/images/banner-home/*.{jpg,jpeg,png,webp}') as Record<string, () => Promise<{ default: string }>>;
@@ -59,12 +60,14 @@ window.addEventListener('resize', () => {
         :class="['masonry-item', { 'opacity-0': !imageVisible[index], 'animate-fade-in': imageVisible[index] }]" alt="Imagen" />
       </div>
       <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-center bg-black bg-opacity-50">
-        <h1 class="text-4xl font-bold">Un lugar con muchas imágenes</h1>
+        <h1 class="text-4xl font-bold">Encuentra lo que buscas en este infinito lugar</h1>
         <p class="text-xl mt-4">Adéntrate en un mundo lleno de inspiración</p>
-        <button class="mt-6 bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded">Explorar</button>
+        <button class="mt-6 text-base bg-yellow-500 hover:bg-yellow-600 text-white py-3 px-6 md:py-4 md:px-8 lg:py-3 lg:px-10 rounded animate-custom-pulse">
+          Explorar
+        </button>
       </div>
     </div>
-    <footer class="bg-gray-800 text-white py-4 text-center"> <p>&copy; 2024 Tu Sitio Web. Todos los derechos reservados.</p> </footer>
+    <Footer/>
   </main>
 </template>
 
@@ -77,7 +80,7 @@ window.addEventListener('resize', () => {
 }
 
 .masonry-item {
-  width: calc(25% - 10px);
+  width: calc(50% - 10px);
   margin-left: 10px;
   margin-bottom: 10px;
   overflow: hidden;
@@ -88,8 +91,20 @@ window.addEventListener('resize', () => {
   width: 100%;
   height: auto;
   object-fit: cover;
-
 }
+
+@media (min-width: 640px) {
+  .masonry-item {
+    width: calc(33.33% - 10px); /* Ancho para tablets */
+  }
+}
+
+@media (min-width: 1024px) {
+  .masonry-item {
+    width: calc(25% - 10px); /* Ancho para pantallas grandes */
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -100,4 +115,17 @@ window.addEventListener('resize', () => {
 }
 
 .animate-fade-in { animation: fadeIn 1s ease-in-out forwards; }
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.animate-custom-pulse {
+  animation: pulse 1.5s infinite;
+}
 </style>
