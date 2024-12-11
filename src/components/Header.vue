@@ -14,8 +14,8 @@ const search = () => {
 </script>
 
 <template>
-  <header class="fixed w-full">
-    <div class="container mx-auto py-4 flex justify-between space-x-8 items-center">
+  <header class="fixed w-full bg-white drop-shadow-lg z-50">
+    <div class="container mx-auto py-4 px-3 flex justify-between space-x-8 items-center">
       <router-link to="/explore">
         <img class="w-36" src="@/assets/images/Logo.png" alt="Logo">
       </router-link>
@@ -23,7 +23,7 @@ const search = () => {
       <input v-model="query"
         @keydown.enter="search"
         placeholder="Buscar imágenes..."
-        class="w-full p-2 rounded"
+        class="w-full p-2 rounded outline-none border border-gray-600"
       />
     </div>
   </header>
