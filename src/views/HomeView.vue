@@ -60,10 +60,10 @@ window.addEventListener('resize', () => {
         :class="['masonry-item', { 'opacity-0': !imageVisible[index], 'animate-fade-in': imageVisible[index] }]" alt="Imagen" />
       </div>
       <div class="absolute inset-0 flex flex-col items-center justify-center text-white text-center bg-black bg-opacity-50">
-        <h1 class="text-4xl font-bold">Encuentra lo que buscas en este infinito lugar</h1>
+        <h1 class="text-4xl font-bold">Descubre el mundo en las imágenes</h1>
         <p class="text-xl mt-4">Adéntrate en un mundo lleno de inspiración</p>
         <button class="mt-6 text-base bg-yellow-500 hover:bg-yellow-600 text-white py-3 px-6 md:py-4 md:px-8 lg:py-3 lg:px-10 rounded animate-custom-pulse">
-          Explorar
+          Comenzar a explorar
         </button>
       </div>
     </div>
