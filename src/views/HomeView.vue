@@ -79,7 +79,7 @@ window.addEventListener('resize', () => {
   </main>
 </template>
 
-<style>
+<style scoped>
 .masonry-grid {
   display: flex;
   flex-wrap: wrap;
