@@ -2,7 +2,9 @@
 import { onMounted, ref } from 'vue';
 import Masonry from 'masonry-layout';
 import imagesMock from '../mock-image';
+import StyleSelector from '@/components/StyleSelector.vue';
 
+const currentStyle = ref('masonry');
 const masonryGrid = ref<HTMLElement | null>(null);
 let masonryInstance: any = null;
 
@@ -25,7 +27,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <h1 class="mb-5 text-cyan-600 text-2xl">Explora entre miles de imágenes</h1>
+  <div class="flex justify-between items-center mb-5">
+    <h1 class="text-cyan-600 text-2xl">Explora entre miles de imágenes</h1>
+    <StyleSelector @update:style="currentStyle = $event" />
+  </div>
   <div class="relative overflow-hidden">
     <div class="masonry-grid" ref="masonryGrid">
       <div
@@ -93,29 +98,5 @@ onMounted(async () => {
   .masonry-item {
     width: calc(25% - 10px); /* Ancho para pantallas grandes */
   }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  } 
-}
-
-.animate-fade-in { animation: fadeIn 1s ease-in-out forwards; }
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-}
-
-.animate-custom-pulse {
-  animation: pulse 1.5s infinite;
 }
 </style>
