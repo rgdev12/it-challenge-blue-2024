@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import Masonry from 'masonry-layout';
 import imagesMock from '../mock-image';
 import StyleSelector from '@/components/StyleSelector.vue';
@@ -9,7 +9,7 @@ const masonryGrid = ref<HTMLElement | null>(null);
 let masonryInstance: any = null;
 
 const initMasonry = async () => {
-  if (masonryGrid.value) {
+  if (masonryGrid.value && currentStyle.value === 'masonry') {
     masonryInstance = new Masonry(masonryGrid.value, {
       itemSelector: '.masonry-item',
       columnWidth: '.masonry-item',
@@ -17,12 +17,20 @@ const initMasonry = async () => {
     });
     masonryInstance.layout();
   }
-}
+};
 
-onMounted(async () => {
-  setTimeout(() => {
-    initMasonry();
-  }, 200)
+onMounted(() => {
+  setTimeout(() => initMasonry(), 200);
+});
+
+// Reactivar Masonry cuando se cambie a estilo 'masonry'
+watch(currentStyle, (newStyle) => {
+  if (newStyle === 'masonry') {
+    setTimeout(() => initMasonry(), 200);
+  } else if (masonryInstance) {
+    masonryInstance.destroy();
+    masonryInstance = null;
+  }
 });
 </script>
 
@@ -32,20 +40,44 @@ onMounted(async () => {
     <StyleSelector @update:style="currentStyle = $event" />
   </div>
   <div class="relative overflow-hidden">
-    <div class="masonry-grid" ref="masonryGrid">
+    <div
+      :class="[
+        'flex flex-wrap ml-[-10px] w-auto',
+        currentStyle === 'masonry' ? 'masonry-grid' : '',
+        currentStyle === 'grid' ? 'grid-grid' : '',
+        currentStyle === 'card' ? 'card-grid' : '',
+      ]"
+      ref="masonryGrid"
+    >
       <div
         v-for="image in imagesMock"
         :key="image.id"
-        class="masonry-item group relative overflow-hidden"
+        :class="[
+          'grid-item group relative overflow-hidden',
+          currentStyle === 'masonry' ? 'masonry-item' : '',
+          currentStyle === 'grid' ? 'grid-item-style' : '',
+          currentStyle === 'card' ? 'card-item' : '',
+        ]"
       >
-        <img
-          :src="image.imageURL"
-          class="w-full h-auto object-cover transform transition-transform duration-500 group-hover:scale-110"
-          alt="Imagen"
-        />
         <div
+          class="image-wrapper"
+          :class="{ 'square': currentStyle !== 'masonry' }"
+        >
+          <img
+            :src="image.imageURL"
+            class="w-full h-full object-cover"
+            alt="Imagen"
+          />
+        </div>
+        <div
+          v-if="currentStyle !== 'card'"
           class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-end p-4 text-white opacity-0 transition-opacity duration-500 group-hover:opacity-100"
         >
+          <h2 class="font-bold text-lg truncate">{{ image.title }}</h2>
+          <p class="text-sm italic">{{ image.author }}</p>
+          <p v-if="currentStyle === 'masonry'" class="text-sm line-clamp-3">{{ image.description }}</p>
+        </div>
+        <div v-if="currentStyle === 'card'" class="h-full p-4 bg-white text-black">
           <h2 class="font-bold text-lg truncate">{{ image.title }}</h2>
           <p class="text-sm italic">{{ image.author }}</p>
           <p class="text-sm line-clamp-3">{{ image.description }}</p>
@@ -56,47 +88,96 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.masonry-grid {
-  display: flex;
-  flex-wrap: wrap;
-  margin-left: -10px;
-  width: auto;
-}
-
-.masonry-item {
+/* Estilos para la visualización masonry */
+.masonry-grid .masonry-item {
   width: calc(50% - 10px);
   margin-left: 10px;
   margin-bottom: 10px;
   position: relative;
-  overflow: hidden;
 }
 
-.masonry-item img {
-  display: block;
-  width: 100%;
-  height: auto;
-  object-fit: cover;
+.masonry-grid .masonry-item .image-wrapper {
+  transition: transform 0.3s ease-in-out;
 }
 
-.masonry-item .line-clamp-3 {
-  display: -webkit-box;
-  display: box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.masonry-grid .masonry-item:hover .image-wrapper {
+  transform: scale(1.05);
+}
+
+.masonry-grid .masonry-item:hover .absolute {
+  opacity: 1;
 }
 
 @media (min-width: 640px) {
-  .masonry-item {
-    width: calc(33.33% - 10px); /* Ancho para tablets */
+  .masonry-grid .masonry-item {
+    width: calc(33.33% - 10px);
   }
 }
 
 @media (min-width: 1024px) {
-  .masonry-item {
-    width: calc(25% - 10px); /* Ancho para pantallas grandes */
+  .masonry-grid .masonry-item {
+    width: calc(25% - 10px);
+  }
+}
+
+/* Estilos para grid y card */
+.image-wrapper.square {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+}
+
+.image-wrapper.square img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Estilos para grid */
+.grid-grid .grid-item-style {
+  width: calc(25% - 10px);
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+@media (min-width: 640px) {
+  .grid-grid .grid-item-style {
+    width: calc(20% - 10px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-grid .grid-item-style {
+    width: calc(16.66% - 10px);
+  }
+}
+
+/* Estilos para cards */
+.card-grid .card-item {
+  width: calc(50% - 10px);
+  margin-left: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.card-grid .card-item img {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+@media (min-width: 640px) {
+  .card-grid .card-item {
+    width: calc(25% - 10px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-grid .card-item {
+    width: calc(20% - 10px);
   }
 }
 </style>

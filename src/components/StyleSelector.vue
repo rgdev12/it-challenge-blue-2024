@@ -11,7 +11,7 @@ const emit = defineEmits(['update:style']);
 const styles = [
   { value: 'masonry', label: 'Mosaico', icon: MasonryIcon },
   { value: 'grid', label: 'Cuadrícula', icon: GridIcon },
-  { value: 'cards', label: 'Informativo', icon: CardsIcon },
+  { value: 'card', label: 'Informativo', icon: CardsIcon },
 ];
 
 const dropdownOpen = ref(false);
