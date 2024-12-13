@@ -8,14 +8,9 @@ export const useImageStore = defineStore('imageStore', () => {
   const query = ref<string>('');
   const totalImages = computed(() => images.value.length);
 
-  async function searchImages(newQuery: string) {
+  async function searchImages(params: {[key: string]: string | number | boolean}) {
     try {
-      const response = await imageService.getImagesByParams({
-        per_page: 20,
-        page: 1,
-        type: 'grid'
-      });
-      console.log(response);
+      const response = await imageService.getImagesByParams(params);
 
       images.value = response.data;
       // query.value = newQuery;

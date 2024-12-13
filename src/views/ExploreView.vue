@@ -22,9 +22,14 @@ const initMasonry = async () => {
 };
 
 onMounted(async () => {
+  await fetchInitImages();
   setTimeout(() => initMasonry(), 200);
-  await imageStore.searchImages('test');
 });
+
+async function fetchInitImages() {
+  const params = { per_page: 20, page: 1, type: 'grid'}; // Ejemplo de parámetros
+  await imageStore.searchImages(params);
+}
 
 // Reactivar Masonry cuando se cambie a estilo 'masonry'
 watch(currentStyle, (newStyle) => {
@@ -53,7 +58,7 @@ watch(currentStyle, (newStyle) => {
       ref="masonryGrid"
     >
       <div
-        v-for="image in imagesMock"
+        v-for="image in imageStore.images"
         :key="image.id"
         :class="[
           'grid-item group relative overflow-hidden',
@@ -67,7 +72,7 @@ watch(currentStyle, (newStyle) => {
           :class="{ 'square': currentStyle !== 'masonry' }"
         >
           <img
-            :src="image.imageURL"
+            :src="image.url_m"
             class="w-full h-full object-cover"
             alt="Imagen"
           />
@@ -77,12 +82,12 @@ watch(currentStyle, (newStyle) => {
           class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-end p-4 text-white opacity-0 transition-opacity duration-500 group-hover:opacity-100"
         >
           <h2 class="font-bold text-lg truncate">{{ image.title }}</h2>
-          <p class="text-sm italic">{{ image.author }}</p>
+          <p class="text-sm italic">{{ image.owner?.username ?? '' }}</p>
           <p v-if="currentStyle === 'masonry'" class="text-sm line-clamp-3">{{ image.description }}</p>
         </div>
         <div v-if="currentStyle === 'card'" class="h-full p-4 bg-white text-black">
           <h2 class="font-bold text-lg truncate">{{ image.title }}</h2>
-          <p class="text-sm italic">{{ image.author }}</p>
+          <p class="text-sm italic">{{ image.owner?.username ?? '' }}</p>
           <p class="text-sm line-clamp-3">{{ image.description }}</p>
         </div>
       </div>
