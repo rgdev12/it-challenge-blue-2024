@@ -1,6 +1,8 @@
 import axios from 'axios';
+import { VITE_API_HOST } from '@/config';
+
 const apiClient = axios.create({
-  baseURL: 'https://tu-dominio-api.com',
+  baseURL: `${VITE_API_HOST}/api`,
   headers: {
     'Content-type': 'application/json',
   },
