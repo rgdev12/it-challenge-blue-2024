@@ -3,9 +3,11 @@ import { onMounted, ref, watch } from 'vue';
 import Masonry from 'masonry-layout';
 import imagesMock from '../mock-image';
 import StyleSelector from '@/components/StyleSelector.vue';
+import { useImageStore } from '@/stores/imageStore';
 
 const currentStyle = ref('masonry');
 const masonryGrid = ref<HTMLElement | null>(null);
+const imageStore = useImageStore();
 let masonryInstance: any = null;
 
 const initMasonry = async () => {
@@ -19,8 +21,9 @@ const initMasonry = async () => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
   setTimeout(() => initMasonry(), 200);
+  await imageStore.searchImages('test');
 });
 
 // Reactivar Masonry cuando se cambie a estilo 'masonry'
