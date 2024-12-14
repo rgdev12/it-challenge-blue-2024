@@ -17,7 +17,7 @@ const search = async () => {
   imageStore.query = query.value;
   imageStore.currentPage = 1;
   
-  router.push({ path: route.path, query: { q: query.value } });
+  router.push({ path: '/explore', query: { q: query.value } });
 
   const params = {
     type: query.value ? 'search' : 'grid',
