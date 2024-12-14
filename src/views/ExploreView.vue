@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, onBeforeUnmount  } from 'vue';
 import Masonry from 'masonry-layout';
-import imagesMock from '../mock-image';
 import StyleSelector from '@/components/StyleSelector.vue';
 import { useImageStore } from '@/stores/imageStore';
 
@@ -10,7 +9,18 @@ const masonryGrid = ref<HTMLElement | null>(null);
 const imageStore = useImageStore();
 let masonryInstance: any = null;
 
-const initMasonry = async () => {
+const handleScroll = async () => {
+  const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+
+  // Si estamos cerca del final del scroll y no estamos cargando
+  if (scrollTop + clientHeight >= scrollHeight - 10 && !imageStore.isLoading) {
+    const params = { per_page: 20, type: 'grid' };
+    await imageStore.searchImages(params);
+    setTimeout(() => initMasonry(), 200);
+  }
+};
+
+const initMasonry = () => {
   if (masonryGrid.value && currentStyle.value === 'masonry') {
     masonryInstance = new Masonry(masonryGrid.value, {
       itemSelector: '.masonry-item',
@@ -23,18 +33,23 @@ const initMasonry = async () => {
 
 onMounted(async () => {
   await fetchInitImages();
-  setTimeout(() => initMasonry(), 200);
+  setTimeout(() => initMasonry(), 300);
+  window.addEventListener('scroll', handleScroll);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleScroll);
 });
 
 async function fetchInitImages() {
-  const params = { per_page: 20, page: 1, type: 'grid'}; // Ejemplo de parámetros
+  const params = { per_page: 20, type: 'grid'}; // Ejemplo de parámetros
   await imageStore.searchImages(params);
 }
 
 // Reactivar Masonry cuando se cambie a estilo 'masonry'
 watch(currentStyle, (newStyle) => {
   if (newStyle === 'masonry') {
-    setTimeout(() => initMasonry(), 200);
+    setTimeout(() => initMasonry(), 300);
   } else if (masonryInstance) {
     masonryInstance.destroy();
     masonryInstance = null;
@@ -92,6 +107,8 @@ watch(currentStyle, (newStyle) => {
         </div>
       </div>
     </div>
+    <p v-if="imageStore.isLoading" class="text-center">Cargando más imágenes...</p>
+    <p v-if="!imageStore.isLoading && !imageStore.images.length" class="text-center">No se econtraron imágenes</p>
   </div>
 </template>
 
