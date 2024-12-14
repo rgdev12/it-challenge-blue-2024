@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, onBeforeUnmount  } from 'vue';
+import { useRoute } from 'vue-router';
 import Masonry from 'masonry-layout';
 import StyleSelector from '@/components/StyleSelector.vue';
 import { useImageStore } from '@/stores/imageStore';
@@ -7,6 +8,7 @@ import { useImageStore } from '@/stores/imageStore';
 const currentStyle = ref('masonry');
 const masonryGrid = ref<HTMLElement | null>(null);
 const imageStore = useImageStore();
+const route = useRoute();
 let masonryInstance: any = null;
 
 const handleScroll = async () => {
@@ -14,14 +16,18 @@ const handleScroll = async () => {
 
   // Si estamos cerca del final del scroll y no estamos cargando
   if (scrollTop + clientHeight >= scrollHeight - 10 && !imageStore.isLoading) {
-    const params = { per_page: 20, type: 'grid' };
+    const params = { type: imageStore.query ? 'search' : 'grid', tag: imageStore.query };
     await imageStore.searchImages(params);
-    setTimeout(() => initMasonry(), 300);
   }
 };
 
 const initMasonry = () => {
   if (masonryGrid.value && currentStyle.value === 'masonry') {
+    if (masonryInstance) { // Si ya tenemos una instancia de masonry la destruimos
+      masonryInstance.destroy();
+      masonryInstance = null;
+    }
+
     masonryInstance = new Masonry(masonryGrid.value, {
       itemSelector: '.masonry-item',
       columnWidth: '.masonry-item',
@@ -33,7 +39,6 @@ const initMasonry = () => {
 
 onMounted(async () => {
   await fetchInitImages();
-  setTimeout(() => initMasonry(), 300);
   window.addEventListener('scroll', handleScroll);
 });
 
@@ -42,8 +47,16 @@ onBeforeUnmount(() => {
 });
 
 async function fetchInitImages() {
-  const params = { per_page: 20, type: 'grid'}; // Ejemplo de parámetros
+  const query = route.query.q?.toString() || '';
+  imageStore.query = query;
+  imageStore.currentPage = 1;
+
+  const params = {
+    type: query ? 'search' : 'grid',
+    tag: query,
+  };
   await imageStore.searchImages(params);
+  setTimeout(() => initMasonry(), 300);
 }
 
 // Reactivar Masonry cuando se cambie a estilo 'masonry'
@@ -53,6 +66,27 @@ watch(currentStyle, (newStyle) => {
   } else if (masonryInstance) {
     masonryInstance.destroy();
     masonryInstance = null;
+  }
+});
+
+const handleMasonryUpdate = () => {
+  if (currentStyle.value === 'masonry' && masonryGrid.value) {
+    setTimeout(() => {
+      if (masonryInstance) {
+        masonryInstance.reloadItems();
+        masonryInstance.layout();
+      } else {
+        initMasonry();
+      }
+    }, 300);
+  }
+};
+
+watch(() => imageStore.images, (newImages, oldImages) => {
+  if (currentStyle.value === 'masonry' && masonryGrid.value && newImages.length === 0) {
+    setTimeout(() => initMasonry(), 300);
+  } else {
+    setTimeout(() => handleMasonryUpdate(), 300);
   }
 });
 </script>
@@ -65,7 +99,7 @@ watch(currentStyle, (newStyle) => {
   <div class="relative overflow-hidden">
     <div
       :class="[
-        'flex flex-wrap ml-[-10px] w-auto',
+        'flex flex-wrap ml-[-10px] w-auto mb-32',
         currentStyle === 'masonry' ? 'masonry-grid' : '',
         currentStyle === 'grid' ? 'grid-grid' : '',
         currentStyle === 'card' ? 'card-grid' : '',

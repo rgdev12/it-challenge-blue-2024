@@ -1,19 +1,30 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, watch } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { useImageStore } from '@/stores/imageStore';
 import PhotoSearchIcon from '@/components/icons/IconPhotoSearch.vue';
 
 const query = ref('');
 const router = useRouter();
+const route = useRoute();
 const imageStore = useImageStore();
 
-const search = () => {
+watch(() => route.query.q, (newQuery) => {
+  query.value = newQuery?.toString() || '';
+});
+
+const search = async () => {
   imageStore.query = query.value;
+  imageStore.currentPage = 1;
   
-  if (imageStore.query) {
-    
-  }
+  router.push({ path: route.path, query: { q: query.value } });
+
+  const params = {
+    type: query.value ? 'search' : 'grid',
+    tag: query.value,
+  };
+
+  await imageStore.searchImages(params);
 };
 </script>
 

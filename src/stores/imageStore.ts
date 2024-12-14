@@ -13,13 +13,17 @@ export const useImageStore = defineStore('imageStore', () => {
   async function searchImages(params: {[key: string]: string | number | boolean}) {
     try {
       isLoading.value = true;
+      params.per_page = 20;
       params.page = currentPage.value;
+
+      if (params.page === 1) {
+        images.value = [];
+      }
 
       const response = await imageService.getImagesByParams(params);
 
       images.value = [...images.value, ...response.data]; 
       currentPage.value += 1;
-      // query.value = newQuery;
     } catch (exception) {
       console.error('Error al buscar imágenes:', exception);
     } finally {
@@ -32,6 +36,7 @@ export const useImageStore = defineStore('imageStore', () => {
     query,
     totalImages,
     isLoading,
+    currentPage,
     searchImages
   };
 });
