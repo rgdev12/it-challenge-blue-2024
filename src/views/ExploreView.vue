@@ -16,7 +16,7 @@ const handleScroll = async () => {
   if (scrollTop + clientHeight >= scrollHeight - 10 && !imageStore.isLoading) {
     const params = { per_page: 20, type: 'grid' };
     await imageStore.searchImages(params);
-    setTimeout(() => initMasonry(), 200);
+    setTimeout(() => initMasonry(), 300);
   }
 };
 
@@ -58,7 +58,7 @@ watch(currentStyle, (newStyle) => {
 </script>
 
 <template>
-  <div class="flex justify-between items-center mb-5">
+  <div class="flex justify-between items-center my-5">
     <h1 class="text-cyan-600 text-2xl">Explora entre miles de imágenes</h1>
     <StyleSelector @update:style="currentStyle = $event" />
   </div>
