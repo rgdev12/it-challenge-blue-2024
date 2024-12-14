@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue';
+import { ref, defineEmits, markRaw } from 'vue';
 
 // Importamos los íconos como componentes
 import MasonryIcon from '@/components/icons/IconLayoutBoard.vue';
@@ -9,9 +9,9 @@ import CardsIcon from '@/components/icons/IconChalkBoard.vue';
 const emit = defineEmits(['update:style']);
 
 const styles = [
-  { value: 'masonry', label: 'Mosaico', icon: MasonryIcon },
-  { value: 'grid', label: 'Cuadrícula', icon: GridIcon },
-  { value: 'card', label: 'Informativo', icon: CardsIcon },
+  { value: 'masonry', label: 'Mosaico', icon: markRaw(MasonryIcon) },
+  { value: 'grid', label: 'Cuadrícula', icon: markRaw(GridIcon) },
+  { value: 'card', label: 'Informativo', icon: markRaw(CardsIcon) },
 ];
 
 const dropdownOpen = ref(false);
