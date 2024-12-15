@@ -3,12 +3,13 @@ import { ref, onMounted } from 'vue';
 import CalendarIcon from '@/components/icons/IconCalendarEvent.vue';
 import CameraIcon from '@/components/icons/IconCamera.vue';
 import Footer from '../components/Footer.vue'
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useImageStore } from '@/stores/imageStore';
 import type { ImageInfoData } from '@/utils/intefaces/ImageInterfaces';
 
 const imageStore = useImageStore();
 const route = useRoute();
+const router = useRouter();
 const id = ref<string | null>(null);
 
 const imageInfo = ref<ImageInfoData>();
@@ -27,6 +28,11 @@ const getImageInfo = async () => {
   }
   
   const res = await imageStore.getImagenInfo(params);
+  
+  if (!res) {
+    router.push({path: '/explore'});
+  }
+
   imageInfo.value = res?.data;
 }
 
