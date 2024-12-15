@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router';
 import Masonry from 'masonry-layout';
 import StyleSelector from '@/components/StyleSelector.vue';
 import { useImageStore } from '@/stores/imageStore';
+import ImageLoader from '@/components/ImageLoader.vue';
 
 const currentStyle = ref('masonry');
 const masonryGrid = ref<HTMLElement | null>(null);
@@ -150,7 +151,7 @@ watch(() => imageStore.images, (newImages, oldImages) => {
           </div>
         </div>
       </div>
-      <p v-if="imageStore.isLoading" class="text-center">Cargando más imágenes...</p>
+      <ImageLoader v-if="imageStore.isLoading" class="mb-32" />
       <p v-if="!imageStore.isLoading && !imageStore.images.length" class="text-center">No se econtraron imágenes</p>
     </div>
   </div>
