@@ -39,10 +39,10 @@ interface Pagination {
 export interface ImageInfo {
   status: string;
   message: string;
-  data: imageInfoData
+  data: ImageInfoData
 }
 
-interface imageInfoData {
+export interface ImageInfoData {
   id: string;
   title: string;
   description: string;
