@@ -81,11 +81,11 @@ const getMonthName = (month: number): string => {
 
 <template>
   <div class="min-h-screen flex flex-col">
-    <div class="flex-1 px-3">
+    <div class="flex-1 px-3 mb-4">
       <div class="container mx-auto border border-gray-400 rounded p-4">
         <div class="flex flex-wrap gap-5">
           <div class="flex-1 min-w-full sm:min-w-[calc(50%-10px)] box-border">
-            <img :src="imageInfo?.url_m" alt="Imagen" class="rounded-md mx-auto">
+            <img :src="imageInfo?.url_g" alt="Imagen" class="rounded-md mx-auto">
           </div>
           <div class="flex-1 min-w-full sm:min-w-[calc(50%-10px)] box-border">
             <h1 class="text-gray-800 text-3xl font-semibold">{{ imageInfo?.title }}</h1>
