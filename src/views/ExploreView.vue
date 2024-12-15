@@ -101,8 +101,8 @@ watch(() => imageStore.images, (newImages, oldImages) => {
 
 <template>
   <div class="container mx-auto px-3">
-    <div class="flex justify-between items-center my-5 ">
-      <h1 class="text-cyan-600 text-2xl">Explora entre miles de imágenes</h1>
+    <div class="flex flex-wrap justify-between items-center my-5 ">
+      <h1 class="text-cyan-600 text-2xl mb-4 sm:mb-0">Explora entre miles de imágenes</h1>
       <StyleSelector @update:style="currentStyle = $event" />
     </div>
     <div class="relative overflow-hidden">
@@ -151,8 +151,31 @@ watch(() => imageStore.images, (newImages, oldImages) => {
           </div>
         </div>
       </div>
+
       <ImageLoader v-if="imageStore.isLoading" class="mb-32" />
-      <p v-if="!imageStore.isLoading && !imageStore.images.length" class="text-center">No se econtraron imágenes</p>
+      
+      <div v-if="!imageStore.isLoading && !imageStore.images.length">
+        <div class="no-results flex flex-col items-center justify-center text-center p-5">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-20 h-20 text-cyan-600 mb-2"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9.75 9.75L14.25 14.25M14.25 9.75L9.75 14.25M21 12A9 9 0 1 1 3 12a9 9 0 0 1 18 0z"
+            />
+          </svg>
+          <h2 class="text-2xl font-bold text-gray-700">No se encontraron imágenes</h2>
+          <p class="text-gray-500 mt-2">
+            Intenta buscar con palabras diferentes para encontrar imágenes que te interesen.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
