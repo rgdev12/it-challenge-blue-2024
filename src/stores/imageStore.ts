@@ -31,12 +31,27 @@ export const useImageStore = defineStore('imageStore', () => {
     }
   }
 
+  async function getImagenInfo(params: {[key: string]: string | number | boolean}) {
+    try {
+      const response = await imageService.getImageInfo(params);
+
+      if (!response) {
+        return null
+      }
+
+      return response
+    } catch (exception) {
+      console.error('Error al buscar imágenes:', exception);
+    }
+  }
+
   return {
     images,
     query,
     totalImages,
     isLoading,
     currentPage,
-    searchImages
+    searchImages,
+    getImagenInfo
   };
 });
