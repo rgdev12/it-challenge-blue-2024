@@ -12,21 +12,6 @@ const imageStore = useImageStore();
 const route = useRoute();
 const router = useRouter();
 let masonryInstance: any = null;
-let flagScroll = ref<string>('');
-
-const handleScroll = async () => {
-  flagScroll.value = 'haciendo scroll'
-  console.log('haciendo scroll')
-  const scrollTop = window.scrollY;
-  const scrollHeight = document.documentElement.scrollHeight;
-  const clientHeight = window.innerHeight;
-
-  // Si estamos cerca del final del scroll y no estamos cargando
-  if (scrollTop + clientHeight >= scrollHeight - 10 && !imageStore.isLoading) {
-    const params = { type: imageStore.query ? 'search' : 'grid', tag: imageStore.query };
-    await imageStore.searchImages(params);
-  }
-};
 
 const initMasonry = () => {
   if (masonryGrid.value && currentStyle.value === 'masonry') {
@@ -46,11 +31,17 @@ const initMasonry = () => {
 
 onMounted(async () => {
   await fetchInitImages();
-  window.addEventListener('scroll', handleScroll);
-});
-
-onBeforeUnmount(() => {
-  window.removeEventListener('scroll', handleScroll);
+  
+  const observer = new IntersectionObserver(handleIntersection, {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1
+  });
+  
+  const sentinel = document.getElementById('sentinel');
+  if (sentinel) {
+    observer.observe(sentinel);
+  }
 });
 
 async function fetchInitImages() {
@@ -94,6 +85,13 @@ const handleMasonryUpdate = () => {
   }
 };
 
+const handleIntersection = async (entries: any) => {
+  if (entries[0].isIntersecting && !imageStore.isLoading) {
+    const params = { type: imageStore.query ? 'search' : 'grid', tag: imageStore.query };
+    await imageStore.searchImages(params);
+  }
+};
+
 // Función que ve si es necesario acualizar los items del masonry o si hay que inicializarlo
 watch(() => imageStore.images, (newImages, oldImages) => {
   if (currentStyle.value === 'masonry' && masonryGrid.value && newImages.length === 0) {
@@ -106,7 +104,6 @@ watch(() => imageStore.images, (newImages, oldImages) => {
 
 <template>
   <div class="container mx-auto px-3">
-  {{ flagScroll }}
     <div class="flex flex-wrap justify-between items-center my-5 ">
       <h1 class="text-cyan-600 text-2xl mb-4 sm:mb-0">Explora entre miles de imágenes</h1>
       <StyleSelector @update:style="currentStyle = $event" />
@@ -158,6 +155,7 @@ watch(() => imageStore.images, (newImages, oldImages) => {
         </div>
       </div>
 
+      <div id="sentinel" class="w-full h-1"></div>
       <ImageLoader v-if="imageStore.isLoading" class="my-32" />
       
       <div v-if="!imageStore.isLoading && !imageStore.images.length">
