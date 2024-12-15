@@ -30,7 +30,7 @@ const search = async () => {
 
 <template>
   <header class="fixed w-full bg-white drop-shadow-lg z-50">
-    <div class="container mx-auto py-4 px-3 flex justify-between items-center">
+    <div class="container mx-auto py-4 px-3 sm:px-0 flex justify-between items-center">
       <router-link to="/explore">
         <img class="w-36" src="@/assets/images/Logo.png" alt="Logo">
       </router-link>

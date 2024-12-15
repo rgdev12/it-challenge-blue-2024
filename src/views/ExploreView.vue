@@ -92,57 +92,59 @@ watch(() => imageStore.images, (newImages, oldImages) => {
 </script>
 
 <template>
-  <div class="flex justify-between items-center my-5">
-    <h1 class="text-cyan-600 text-2xl">Explora entre miles de imágenes</h1>
-    <StyleSelector @update:style="currentStyle = $event" />
-  </div>
-  <div class="relative overflow-hidden">
-    <div
-      :class="[
-        'flex flex-wrap ml-[-10px] w-auto mb-32',
-        currentStyle === 'masonry' ? 'masonry-grid' : '',
-        currentStyle === 'grid' ? 'grid-grid' : '',
-        currentStyle === 'card' ? 'card-grid' : '',
-      ]"
-      ref="masonryGrid"
-    >
+  <div class="container mx-auto">
+    <div class="flex justify-between items-center my-5">
+      <h1 class="text-cyan-600 text-2xl">Explora entre miles de imágenes</h1>
+      <StyleSelector @update:style="currentStyle = $event" />
+    </div>
+    <div class="relative overflow-hidden">
       <div
-        v-for="image in imageStore.images"
-        :key="image.id"
         :class="[
-          'grid-item group relative overflow-hidden',
-          currentStyle === 'masonry' ? 'masonry-item' : '',
-          currentStyle === 'grid' ? 'grid-item-style' : '',
-          currentStyle === 'card' ? 'card-item' : '',
+          'flex flex-wrap ml-[-10px] w-auto mb-32',
+          currentStyle === 'masonry' ? 'masonry-grid' : '',
+          currentStyle === 'grid' ? 'grid-grid' : '',
+          currentStyle === 'card' ? 'card-grid' : '',
         ]"
+        ref="masonryGrid"
       >
         <div
-          class="image-wrapper"
-          :class="{ 'square': currentStyle !== 'masonry' }"
+          v-for="image in imageStore.images"
+          :key="image.id"
+          :class="[
+            'grid-item group relative overflow-hidden',
+            currentStyle === 'masonry' ? 'masonry-item' : '',
+            currentStyle === 'grid' ? 'grid-item-style' : '',
+            currentStyle === 'card' ? 'card-item' : '',
+          ]"
         >
-          <img
-            :src="image.url_m"
-            class="w-full h-full object-cover"
-            alt="Imagen"
-          />
-        </div>
-        <div
-          v-if="currentStyle !== 'card'"
-          class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-end p-4 text-white opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        >
-          <h2 class="font-bold text-lg truncate">{{ image.title }}</h2>
-          <p class="text-sm italic">{{ image.owner?.username ?? '' }}</p>
-          <p v-if="currentStyle === 'masonry'" class="text-sm line-clamp-3">{{ image.description }}</p>
-        </div>
-        <div v-if="currentStyle === 'card'" class="h-full p-4 bg-white text-black">
-          <h2 class="font-bold text-lg truncate">{{ image.title }}</h2>
-          <p class="text-sm italic">{{ image.owner?.username ?? '' }}</p>
-          <p class="text-sm line-clamp-3">{{ image.description }}</p>
+          <div
+            class="image-wrapper"
+            :class="{ 'square': currentStyle !== 'masonry' }"
+          >
+            <img
+              :src="image.url_m"
+              class="w-full h-full object-cover"
+              alt="Imagen"
+            />
+          </div>
+          <div
+            v-if="currentStyle !== 'card'"
+            class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-end p-4 text-white opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+          >
+            <h2 class="font-bold text-lg truncate">{{ image.title }}</h2>
+            <p class="text-sm italic">{{ image.owner?.username ?? '' }}</p>
+            <p v-if="currentStyle === 'masonry'" class="text-sm line-clamp-3">{{ image.description }}</p>
+          </div>
+          <div v-if="currentStyle === 'card'" class="h-full p-4 bg-white text-black">
+            <h2 class="font-bold text-lg truncate">{{ image.title }}</h2>
+            <p class="text-sm italic">{{ image.owner?.username ?? '' }}</p>
+            <p class="text-sm line-clamp-3">{{ image.description }}</p>
+          </div>
         </div>
       </div>
+      <p v-if="imageStore.isLoading" class="text-center">Cargando más imágenes...</p>
+      <p v-if="!imageStore.isLoading && !imageStore.images.length" class="text-center">No se econtraron imágenes</p>
     </div>
-    <p v-if="imageStore.isLoading" class="text-center">Cargando más imágenes...</p>
-    <p v-if="!imageStore.isLoading && !imageStore.images.length" class="text-center">No se econtraron imágenes</p>
   </div>
 </template>
 
