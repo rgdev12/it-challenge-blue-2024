@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, onBeforeUnmount  } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import Masonry from 'masonry-layout';
 import StyleSelector from '@/components/StyleSelector.vue';
 import { useImageStore } from '@/stores/imageStore';
@@ -9,6 +9,7 @@ const currentStyle = ref('masonry');
 const masonryGrid = ref<HTMLElement | null>(null);
 const imageStore = useImageStore();
 const route = useRoute();
+const router = useRouter();
 let masonryInstance: any = null;
 
 const handleScroll = async () => {
@@ -59,6 +60,11 @@ async function fetchInitImages() {
   setTimeout(() => initMasonry(), 300);
 }
 
+const goToImageInfo = (imageId: string) => {
+  const url = router.resolve({ name: 'ImageInfo', params: { id: imageId }}).href;
+  window.open(url, '_blank');
+}
+
 // Reactivar Masonry cuando se cambie a estilo 'masonry'
 watch(currentStyle, (newStyle) => {
   if (newStyle === 'masonry') {
@@ -82,6 +88,7 @@ const handleMasonryUpdate = () => {
   }
 };
 
+// Función que ve si es necesario acualizar los items del masonry o si hay que inicializarlo
 watch(() => imageStore.images, (newImages, oldImages) => {
   if (currentStyle.value === 'masonry' && masonryGrid.value && newImages.length === 0) {
     setTimeout(() => initMasonry(), 300);
@@ -111,11 +118,12 @@ watch(() => imageStore.images, (newImages, oldImages) => {
           v-for="image in imageStore.images"
           :key="image.id"
           :class="[
-            'grid-item group relative overflow-hidden',
+            'grid-item group relative overflow-hidden cursor-pointer',
             currentStyle === 'masonry' ? 'masonry-item' : '',
             currentStyle === 'grid' ? 'grid-item-style' : '',
             currentStyle === 'card' ? 'card-item' : '',
           ]"
+          @click="goToImageInfo(image.id)"
         >
           <div
             class="image-wrapper"
