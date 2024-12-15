@@ -20,6 +20,17 @@ const router = createRouter({
           component: () => import('../views/ExploreView.vue'),
         }
       ]
+    },
+    {
+      path: '/image/:id',
+      component: MainLayout,
+      children: [
+        {
+          path: '',
+          name: 'ImageInfo',
+          component: () => import('../views/ImageInfoView.vue'),
+        }
+      ]
     }
   ],
 })

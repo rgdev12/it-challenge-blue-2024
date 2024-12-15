@@ -10,16 +10,19 @@ export interface ImageSearchResponse {
 }
 
 interface ImageOwner {
-  id: string;
-  username?: string;
-  realname?: string;
+  id?: string;
+  username: string;
+  realname: string;
+  location?: string;
 }
 
 export interface ImageData {
   id: string;
   title: string;
   owner: ImageOwner;
-  description?: string;
+  description: string;
+  tags?: string[];
+  server: string;
   url_p: string;
   url_m: string;
   url_g: string;
@@ -30,4 +33,31 @@ interface Pagination {
   per_page: number;
   total_pages: number;
   total_photos: number;
+}
+
+// Interfaz de la información de la imagen individual
+export interface ImageInfo {
+  status: string;
+  message: string;
+  data: imageInfoData
+}
+
+interface imageInfoData {
+  id: string;
+  title: string;
+  description: string;
+  owner: ImageOwner;
+  dates: ImageInfoDates
+  tags: string[];
+  url_p: string;
+  url_m: string;
+  url_g: string;
+}
+
+interface ImageInfoDates {
+  posted: string;
+  taken: string;
+  takengranularity: number;
+  takenunknown: string;
+  lastupdate: string;
 }
