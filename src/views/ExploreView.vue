@@ -12,10 +12,14 @@ const imageStore = useImageStore();
 const route = useRoute();
 const router = useRouter();
 let masonryInstance: any = null;
+let flagScroll = ref<string>('');
 
 const handleScroll = async () => {
-  const scrollContainer = document.documentElement.scrollTop ? document.documentElement : document.body;
-  const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
+  flagScroll.value = 'haciendo scroll'
+  console.log('haciendo scroll')
+  const scrollTop = window.scrollY;
+  const scrollHeight = document.documentElement.scrollHeight;
+  const clientHeight = window.innerHeight;
 
   // Si estamos cerca del final del scroll y no estamos cargando
   if (scrollTop + clientHeight >= scrollHeight - 10 && !imageStore.isLoading) {
@@ -102,6 +106,7 @@ watch(() => imageStore.images, (newImages, oldImages) => {
 
 <template>
   <div class="container mx-auto px-3">
+  {{ flagScroll }}
     <div class="flex flex-wrap justify-between items-center my-5 ">
       <h1 class="text-cyan-600 text-2xl mb-4 sm:mb-0">Explora entre miles de imágenes</h1>
       <StyleSelector @update:style="currentStyle = $event" />
@@ -109,7 +114,7 @@ watch(() => imageStore.images, (newImages, oldImages) => {
     <div class="relative overflow-hidden">
       <div
         :class="[
-          'flex flex-wrap ml-[-10px] w-auto mb-32',
+          'flex flex-wrap ml-[-10px] w-auto',
           currentStyle === 'masonry' ? 'masonry-grid' : '',
           currentStyle === 'grid' ? 'grid-grid' : '',
           currentStyle === 'card' ? 'card-grid' : '',
@@ -153,7 +158,7 @@ watch(() => imageStore.images, (newImages, oldImages) => {
         </div>
       </div>
 
-      <ImageLoader v-if="imageStore.isLoading" class="mb-32" />
+      <ImageLoader v-if="imageStore.isLoading" class="my-32" />
       
       <div v-if="!imageStore.isLoading && !imageStore.images.length">
         <div class="no-results flex flex-col items-center justify-center text-center p-5">
