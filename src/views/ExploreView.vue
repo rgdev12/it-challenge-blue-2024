@@ -14,7 +14,8 @@ const router = useRouter();
 let masonryInstance: any = null;
 
 const handleScroll = async () => {
-  const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+  const scrollContainer = document.documentElement.scrollTop ? document.documentElement : document.body;
+  const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
 
   // Si estamos cerca del final del scroll y no estamos cargando
   if (scrollTop + clientHeight >= scrollHeight - 10 && !imageStore.isLoading) {
