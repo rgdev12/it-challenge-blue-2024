@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import CalendarIcon from '@/components/icons/IconCalendarEvent.vue';
 import CameraIcon from '@/components/icons/IconCamera.vue';
+import IconMessageCircle from '@/components/icons/IconMessageCircle.vue';
 import Footer from '../components/Footer.vue'
 import { useRoute, useRouter } from 'vue-router';
 import { useImageStore } from '@/stores/imageStore';
@@ -35,6 +36,10 @@ const getImageInfo = async () => {
   }
 
   imageInfo.value = res?.data;
+}
+
+const searchTag = (tag: string) => {
+  router.push({ path: '/explore', query: { q: tag } })
 }
 
 const getMonthName = (month: number): string => {
@@ -110,6 +115,11 @@ function sanitizeContent(content: string) {
                 <p>Tomada: {{ formatDateFromString(imageInfo?.dates.taken ?? '') }}</p>
               </div>
             </div>
+
+            <div class="flex items-center space-x-2 mt-5">
+              <IconMessageCircle />
+              <p class="font-semibold">{{ imageInfo?.comments.length }} Comentarios</p>
+            </div>
           </div>
         </section>
 
@@ -134,6 +144,16 @@ function sanitizeContent(content: string) {
 
             <div class="flex-1 min-w-full sm:min-w-[calc(50%-10px)] box-border">
               <h2 class="text-xl font-semibold mb-4">Etiquetas</h2>
+
+              <div class="flex flex-wrap gap-3">
+                <button
+                  v-for="tag in imageInfo?.tags"
+                  class="border px-2 py-1 bg-gray-200 rounded-md hover:bg-gray-300 transition-all"
+                  @click="searchTag(tag)"
+                >
+                  {{ tag }}
+                </button>
+              </div>
             </div>
           </div>
         </section>
