@@ -99,7 +99,7 @@ function sanitizeContent(content: string) {
           <div class="relative flex-1 min-w-full sm:min-w-[calc(50%-10px)] box-border">
             <button
               @click="isModalOpen = true"
-              class="absolute top-2 right-2 p-1 text-slate-800 hover:text-white"
+              class="absolute top-2 right-2 p-1 text-white"
             >
               <IconArrowsDiagonal />
             </button>
@@ -135,17 +135,15 @@ function sanitizeContent(content: string) {
               v-if="isModalOpen"
               class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
             >
-              <div class="relative bg-white rounded-lg shadow-lg max-w-4xl w-full">
+              <div class="relative rounded-lg shadow-lg max-w-4xl border-2">
                 <button
                   @click="isModalOpen = false"
-                  class="absolute top-2 right-2 p-1 text-slate-800 hover:text-white z-50"
+                  class="absolute right-0 p-1 text-white z-50"
                 >
                   <IconClose />
                 </button>
 
-                <div class="p-3">
-                  <img :src="imageInfo?.url_g" alt="Imagen maximizada" class="rounded-md mx-auto max-h-[80vh] object-contain">
-                </div>
+                <img :src="imageInfo?.url_g" alt="Imagen maximizada" class="rounded-md mx-auto max-h-[80vh] object-contain">
               </div>
             </div>
           </transition>
