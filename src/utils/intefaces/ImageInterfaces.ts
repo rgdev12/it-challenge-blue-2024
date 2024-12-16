@@ -47,7 +47,8 @@ export interface ImageInfoData {
   title: string;
   description: string;
   owner: ImageOwner;
-  dates: ImageInfoDates
+  dates: ImageInfoDates;
+  comments: ImageInfoComments[];
   tags: string[];
   url_p: string;
   url_m: string;
@@ -60,4 +61,18 @@ interface ImageInfoDates {
   takengranularity: number;
   takenunknown: string;
   lastupdate: string;
+}
+
+interface ImageInfoComments {
+  id: string;
+  author: string;
+  author_is_deleted: number;
+  authorname: string;
+  iconserver: string;
+  iconfarm: string;
+  datecreate: string;
+  permalink: string;
+  path_alias: string;
+  realname: string;
+  _content: string;
 }
