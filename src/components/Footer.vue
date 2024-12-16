@@ -1,5 +1,5 @@
 <template>
-  <footer class="bg-gray-800 text-white py-4 text-center">
+  <footer class="bg-gray-800 text-white py-4 text-center w-full">
     <div class="flex justify-center items-center space-x-3">
       <div class="flex items-center space-x-2">
         <img src="@/assets/images/dreamboard-logo.png" alt="DreamBoard Logo" class="w-12">
@@ -7,7 +7,7 @@
       </div>
       <img src="@/assets/images/Logo.png" alt="Logo">
     </div>
-    <p class="mt-2 w-[500px] mx-auto">DreamBoard es un proyecto de búsqueda de imágenes desarrollado por GRKJ Team.</p>
+    <p class="mt-2 mx-auto text-wrap">DreamBoard es un proyecto de búsqueda de imágenes desarrollado por GRKJ Team.</p>
     <p class="mt-5">&copy; 2024 DreamBoard. Todos los derechos reservados.</p>
   </footer>
 </template>
