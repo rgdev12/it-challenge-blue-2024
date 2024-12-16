@@ -6,6 +6,7 @@ import Footer from '../components/Footer.vue'
 import { useRoute, useRouter } from 'vue-router';
 import { useImageStore } from '@/stores/imageStore';
 import type { ImageInfoData } from '@/utils/intefaces/ImageInterfaces';
+import DOMPurify from 'dompurify';
 
 const imageStore = useImageStore();
 const route = useRoute();
@@ -76,6 +77,10 @@ const timestampToDate = (timestamp: number): string => {
   const year = date.getFullYear();
   return `${day}-${month}-${year}`;
 };
+
+function sanitizeContent(content: string) {
+  return DOMPurify.sanitize(content);
+}
 </script>
 
 <template>
@@ -123,7 +128,7 @@ const timestampToDate = (timestamp: number): string => {
                   <p class="text-blue-500 font-semibold text-lg">{{ comment.realname || comment.authorname }}</p>
                   <p class="text-gray-500">{{ timestampToDate(Number(comment.datecreate)) }}</p>
                 </div>
-                <p class="mt-2 text-gray-600" v-html="comment._content"></p>
+                <p class="mt-2 text-gray-600" v-html="sanitizeContent(comment._content)"></p>
               </div>
             </div>
 
