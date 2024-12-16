@@ -30,9 +30,12 @@ const search = async () => {
 
 <template>
   <header class="fixed w-full bg-white drop-shadow-lg z-50">
-    <div class="container mx-auto py-4 px-3 sm:px-0 flex justify-between items-center">
+    <div class="container mx-auto py-4 px-3 flex justify-between items-center">
       <router-link to="/explore">
-        <img class="w-36" src="@/assets/images/Logo.png" alt="Logo">
+        <div class="flex items-center space-x-1 sm:space-x-2">
+          <img class="h-11" src="@/assets/images/dreamboard-logo.png" alt="Logo">
+          <p class="text-2xl hidden sm:block"><span class="text-orange-500 font-bold">Dream</span><span class="text-yellow-500 font-bold">Board</span></p>
+        </div>
       </router-link>
 
       <div class="flex items-center space-x-2">
