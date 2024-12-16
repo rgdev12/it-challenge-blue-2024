@@ -3,6 +3,8 @@ import { ref, onMounted } from 'vue';
 import CalendarIcon from '@/components/icons/IconCalendarEvent.vue';
 import CameraIcon from '@/components/icons/IconCamera.vue';
 import IconMessageCircle from '@/components/icons/IconMessageCircle.vue';
+import IconArrowsDiagonal from '@/components/icons/IconArrowsDiagonal.vue';
+import IconClose from '@/components/icons/IconClose.vue';
 import Footer from '../components/Footer.vue'
 import { useRoute, useRouter } from 'vue-router';
 import { useImageStore } from '@/stores/imageStore';
@@ -15,6 +17,7 @@ const router = useRouter();
 const id = ref<string | null>(null);
 
 const imageInfo = ref<ImageInfoData>();
+const isModalOpen = ref(false);
 
 onMounted(async () => {
   const routeId = route.params.id;
@@ -93,7 +96,13 @@ function sanitizeContent(content: string) {
     <div class="flex-1 px-3 mb-4">
       <div class="container mx-auto border border-gray-400 rounded p-4">
         <section class="flex flex-wrap gap-5">
-          <div class="flex-1 min-w-full sm:min-w-[calc(50%-10px)] box-border">
+          <div class="relative flex-1 min-w-full sm:min-w-[calc(50%-10px)] box-border">
+            <button
+              @click="isModalOpen = true"
+              class="absolute top-2 right-2 p-1 text-slate-800 hover:text-white"
+            >
+              <IconArrowsDiagonal />
+            </button>
             <img :src="imageInfo?.url_g" alt="Imagen" class="rounded-md mx-auto">
           </div>
           <div class="flex-1 min-w-full sm:min-w-[calc(50%-10px)] box-border">
@@ -119,6 +128,27 @@ function sanitizeContent(content: string) {
               <p class="font-semibold">{{ imageInfo?.comments.length }} Comentarios</p>
             </div>
           </div>
+
+          <!-- Modal -->
+          <transition name="fade">
+            <div
+              v-if="isModalOpen"
+              class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
+            >
+              <div class="relative bg-white rounded-lg shadow-lg max-w-4xl w-full">
+                <button
+                  @click="isModalOpen = false"
+                  class="absolute top-2 right-2 p-1 text-slate-800 hover:text-white z-50"
+                >
+                  <IconClose />
+                </button>
+
+                <div class="p-3">
+                  <img :src="imageInfo?.url_g" alt="Imagen maximizada" class="rounded-md mx-auto max-h-[80vh] object-contain">
+                </div>
+              </div>
+            </div>
+          </transition>
         </section>
 
         <hr class="my-5 border-gray-400">
@@ -160,3 +190,15 @@ function sanitizeContent(content: string) {
     <Footer />
   </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
