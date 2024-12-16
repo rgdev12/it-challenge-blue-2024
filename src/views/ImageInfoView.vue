@@ -101,9 +101,7 @@ function sanitizeContent(content: string) {
             <p>Por <span class="italic">{{ imageInfo?.owner.username }}</span></p>
             <p class="text-sm">{{ imageInfo?.owner.location }}</p>
 
-            <p class="mt-5">
-              {{ imageInfo?.description }}
-            </p>
+            <p class="mt-5" v-html="sanitizeContent(imageInfo?.description ?? '')"></p>
 
             <div class="mt-3 flex space-x-4">
               <div class="flex items-stretch sm:items-center space-x-2 text-gray-400">
