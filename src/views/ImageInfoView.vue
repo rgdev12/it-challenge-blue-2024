@@ -5,12 +5,15 @@ import CameraIcon from '@/components/icons/IconCamera.vue';
 import IconMessageCircle from '@/components/icons/IconMessageCircle.vue';
 import IconArrowsDiagonal from '@/components/icons/IconArrowsDiagonal.vue';
 import IconClose from '@/components/icons/IconClose.vue';
+import IconDownload from '@/components/icons/IconDownload.vue';
 import Footer from '../components/Footer.vue'
 import { useRoute, useRouter } from 'vue-router';
 import { useImageStore } from '@/stores/imageStore';
 import type { ImageInfoData } from '@/utils/intefaces/ImageInterfaces';
+import Toast from '../components/Toast.vue';
 import DOMPurify from 'dompurify';
 
+const errorMessage = ref('')
 const imageStore = useImageStore();
 const route = useRoute();
 const router = useRouter();
@@ -89,6 +92,30 @@ const timestampToDate = (timestamp: number): string => {
 function sanitizeContent(content: string) {
   return DOMPurify.sanitize(content);
 }
+
+const downloadImage = async () => {
+  try {
+    const response = await fetch(imageInfo.value?.url_g ?? '');
+    const blob = await response.blob();
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'image-downloaded-from-dreamboard.jpg';
+    link.click();
+
+    URL.revokeObjectURL(link.href);
+  } catch (error) {
+    showError('No pudimos descargar tu imagen, esto puede deberse a una configuración de tu navegador');
+  }
+}
+
+const showError = (messageQ: string) => {
+  const message = messageQ || '¡Algo salió mal! Inténtalo de nuevo.';
+  errorMessage.value = message;
+  setTimeout(() => {
+    errorMessage.value = '';
+  }, 5000)
+}
 </script>
 
 <template>
@@ -96,15 +123,29 @@ function sanitizeContent(content: string) {
     <div class="flex-1 px-3 mb-4">
       <div class="container mx-auto p-4">
         <div class="border border-gray-400 rounded p-4">
+          <Toast
+            v-if="errorMessage"
+            :message="errorMessage"
+            type="error"
+            :duration="5000"
+          />
           <section class="flex flex-wrap gap-5">
-            <div class="relative flex-1 min-w-full sm:min-w-[calc(50%-10px)] box-border">
-              <button
-                @click="isModalOpen = true"
-                class="absolute top-2 right-2 p-1 text-white"
-              >
-                <IconArrowsDiagonal />
-              </button>
-              <img :src="imageInfo?.url_g" alt="Imagen" class="rounded-md mx-auto">
+            <div class="flex-1 min-w-full sm:min-w-[calc(50%-10px)] box-border flex justify-center">
+              <div class="relative inline-block">
+                <button
+                  @click="isModalOpen = true"
+                  class="absolute top-2 right-2 p-1 text-white"
+                >
+                  <IconArrowsDiagonal />
+                </button>
+                <button
+                  @click="downloadImage"
+                  class="absolute top-2 right-10 p-1 text-white rounded"
+                >
+                  <IconDownload />
+                </button>
+                <img :src="imageInfo?.url_g" alt="Imagen" class="rounded-md">
+              </div>
             </div>
             <div class="flex-1 min-w-full sm:min-w-[calc(50%-10px)] box-border">
               <h1 class="text-gray-800 dark:text-white text-3xl font-semibold">{{ imageInfo?.title }}</h1>
@@ -134,7 +175,7 @@ function sanitizeContent(content: string) {
             <transition name="fade">
               <div
                 v-if="isModalOpen"
-                class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
+                class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 px-3 sm:px-0"
               >
                 <div class="relative rounded-lg shadow-lg max-w-4xl border-2">
                   <button
