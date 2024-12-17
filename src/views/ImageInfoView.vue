@@ -12,6 +12,7 @@ import { useImageStore } from '@/stores/imageStore';
 import type { ImageInfoData } from '@/utils/intefaces/ImageInterfaces';
 import Toast from '../components/Toast.vue';
 import DOMPurify from 'dompurify';
+import ImageLoader from '@/components/ImageLoader.vue';
 
 const errorMessage = ref('')
 const imageStore = useImageStore();
@@ -120,7 +121,7 @@ const showError = (messageQ: string) => {
 
 <template>
   <div class="min-h-screen flex flex-col">
-    <div class="flex-1 px-3 mb-4">
+    <div v-if="!imageStore.isLoading" class="flex-1 px-3 mb-4">
       <div class="container mx-auto p-4">
         <div class="border border-gray-400 rounded p-4">
           <Toast
@@ -148,7 +149,7 @@ const showError = (messageQ: string) => {
               </div>
             </div>
             <div class="flex-1 min-w-full sm:min-w-[calc(50%-10px)] box-border">
-              <h1 class="text-gray-800 dark:text-white text-3xl font-semibold">{{ imageInfo?.title }}</h1>
+              <h1 class="text-gray-800 dark:text-white text-3xl font-semibold break-words">{{ imageInfo?.title }}</h1>
               <p>Por <span class="italic">{{ imageInfo?.owner.username }}</span></p>
               <p class="text-sm">{{ imageInfo?.owner.location }}</p>
 
@@ -206,7 +207,7 @@ const showError = (messageQ: string) => {
                     <p class="text-blue-500 font-semibold text-lg">{{ comment.realname || comment.authorname }}</p>
                     <p class="text-gray-500">{{ timestampToDate(Number(comment.datecreate)) }}</p>
                   </div>
-                  <p class="mt-2 text-gray-600 dark:text-gray-300" v-html="sanitizeContent(comment._content)"></p>
+                  <p class="mt-2 text-gray-600 dark:text-gray-300 break-words" v-html="sanitizeContent(comment._content)"></p>
                 </div>
               </div>
 
@@ -228,6 +229,7 @@ const showError = (messageQ: string) => {
         </div>
       </div>
     </div>
+    <ImageLoader v-if="imageStore.isLoading" class="my-32" />
     <Footer />
   </div>
 </template>
