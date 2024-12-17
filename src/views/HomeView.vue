@@ -1,19 +1,26 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed, markRaw } from 'vue';
 import Footer from '../components/Footer.vue'
 import Masonry from 'masonry-layout';
 import { useRouter } from 'vue-router';
+import IconMoonStars from '@/components/icons/IconMoonStars.vue';
+import IconBrightnessUp from '@/components/icons/IconBrightnessUp.vue';
+import { useDarkMode } from "@/utils/useDarkMode";
 
 const router = useRouter();
+const { isDarkMode, toggleDarkMode, applyTheme } = useDarkMode();
 
 const imageModules = import.meta.glob('@/assets/images/banner-home/*.{jpg,jpeg,png,webp}') as Record<string, () => Promise<{ default: string }>>;
 const images = ref<string[]>([]);
 const imageVisible = ref<boolean[]>([]);
 const masonryGrid = ref<HTMLElement | null>(null);
 
+const currentIcon = computed(() => (isDarkMode.value ? markRaw(IconMoonStars) : markRaw(IconBrightnessUp)));
 let masonryInstance: any = null;
 
 onMounted(async  () => {
+  applyTheme();
+
   await loadImages();
   imageVisible.value = new Array(images.value.length).fill(false);
   await initMasonry();
@@ -61,7 +68,10 @@ window.addEventListener('resize', () => {
 
 <template>
   <main class="min-h-screen flex flex-col justify-between">
-    <div class="relative h-screen bg-gray-900 overflow-hidden">
+    <div class="relative h-screen bg-[#F0F7FF] dark:bg-gray-800 overflow-hidden">
+      <button class="absolute right-3 top-3 text-white z-50" @click="toggleDarkMode">
+        <component :is="currentIcon" class="dark:text-gray-300"/>
+      </button>
       <div class="masonry-grid" ref="masonryGrid">
         <img v-for="(image, index) in images" :key="index" :src="image"
         :class="['masonry-item', { 'opacity-0': !imageVisible[index], 'animate-fade-in': imageVisible[index] }]" alt="Imagen" />
