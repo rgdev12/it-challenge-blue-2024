@@ -11,7 +11,7 @@ const iconColors = [
   'text-amber-400',
   'text-blue-500',
   'text-green-500',
-  'text-yellow-500'
+  'text-orange-500'
 ];
 const currentIconIndex = ref(0);
 const currentIcon = ref(icons[currentIconIndex.value]);
@@ -42,7 +42,7 @@ const startLoader = () => {
 
     // Cambiar la frase aleatoriamente
     currentPhrase.value = phrases[Math.floor(Math.random() * phrases.length)];
-  }, 2000); // Cambia cada segundo
+  }, 1500); // Cambia cada segundo
 };
 </script>
 
@@ -57,7 +57,7 @@ const startLoader = () => {
     </div>
 
     <!-- Frase aleatoria -->
-    <p class="text-lg text-gray-800 text-center">{{ currentPhrase }}</p>
+    <p class="text-lg text-gray-800 dark:text-gray-300 text-center">{{ currentPhrase }}</p>
   </div>
 </template>
 

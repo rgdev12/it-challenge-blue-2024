@@ -105,7 +105,7 @@ watch(() => imageStore.images, (newImages, oldImages) => {
 <template>
   <div class="container mx-auto px-3">
     <div class="flex flex-wrap justify-between items-center my-5 ">
-      <h1 class="text-cyan-600 text-2xl mb-4 sm:mb-0">Explora entre miles de imágenes</h1>
+      <h1 class="text-cyan-600 dark:text-white text-2xl mb-4 sm:mb-0">Explora entre miles de imágenes</h1>
       <StyleSelector @update:style="currentStyle = $event" />
     </div>
     <div class="relative overflow-hidden">

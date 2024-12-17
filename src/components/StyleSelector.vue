@@ -32,7 +32,7 @@ const selectStyle = (style: typeof styles[0]) => {
   <div class="relative inline-block">
     <!-- Botón principal -->
     <button 
-      class="w-52 p-2 border rounded bg-white flex justify-between items-center"
+      class="w-52 p-2 border rounded bg-white flex justify-between items-center dark:text-black"
       @click="toggleDropdown"
     >
       <span class="flex items-center">
@@ -52,7 +52,7 @@ const selectStyle = (style: typeof styles[0]) => {
       <li 
         v-for="style in styles" 
         :key="style.value" 
-        class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100"
+        class="flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100 dark:text-black"
         @click="selectStyle(style)"
       >
         <component :is="style.icon" class="mr-2" />
