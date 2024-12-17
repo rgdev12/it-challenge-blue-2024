@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, defineEmits, markRaw } from 'vue';
+import { onMounted, ref, defineEmits, markRaw } from 'vue';
 
 // Importamos los íconos como componentes
 import MasonryIcon from '@/components/icons/IconLayoutBoard.vue';
@@ -17,6 +17,19 @@ const styles = [
 const dropdownOpen = ref(false);
 const selectedStyle = ref(styles[0]);
 
+onMounted(() => {
+  const styleSelectorFromLocal = localStorage.getItem("styleSelector");
+
+  if (styleSelectorFromLocal) {
+    const foundStyle = styles.find((style) => style.value === styleSelectorFromLocal);
+    if (foundStyle) {
+      console.log('foundStyle', foundStyle)
+      selectedStyle.value = foundStyle;
+      emit('update:style', selectedStyle.value.value);
+    }
+  }
+})
+
 const toggleDropdown = () => {
   dropdownOpen.value = !dropdownOpen.value;
 };
@@ -25,6 +38,7 @@ const selectStyle = (style: typeof styles[0]) => {
   selectedStyle.value = style;
   emit('update:style', style.value);
   dropdownOpen.value = false;
+  localStorage.setItem("styleSelector", style.value);
 };
 </script>
 

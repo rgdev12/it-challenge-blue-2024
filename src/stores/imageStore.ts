@@ -33,6 +33,7 @@ export const useImageStore = defineStore('imageStore', () => {
 
   async function getImagenInfo(params: {[key: string]: string | number | boolean}) {
     try {
+      isLoading.value = true;
       const response = await imageService.getImageInfo(params);
 
       if (!response) {
@@ -42,6 +43,8 @@ export const useImageStore = defineStore('imageStore', () => {
       return response
     } catch (exception) {
       console.error('Error al buscar imágenes:', exception);
+    } finally {
+      isLoading.value = false;
     }
   }
 
